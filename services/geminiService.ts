@@ -51,7 +51,7 @@ const responseSchema: Schema = {
 
 export const analyzeImageText = async (base64Image: string): Promise<AnalysisResult> => {
   try {
-    const ai = new GoogleGenAI({ apiKey: API_KEY, httpOptions: {baseUrl: "https://aihubmix.com/gemini"} });
+    const ai = new GoogleGenAI({ apiKey: API_KEY, httpOptions: { baseUrl: "https://aihubmix.com/gemini" } });
     // Strip header if present (e.g., "data:image/png;base64,")
     const cleanBase64 = base64Image.split(',')[1] || base64Image;
 
@@ -81,7 +81,7 @@ export const analyzeImageText = async (base64Image: string): Promise<AnalysisRes
     if (!jsonText) throw new Error("No response from Gemini");
 
     const data = JSON.parse(jsonText);
-    
+
     // Add IDs and initialize currentText
     const processedBlocks = (data.textBlocks || []).map((block: any, index: number) => ({
       ...block,
@@ -101,14 +101,14 @@ export const removeTextFromImage = async (base64Image: string): Promise<string |
   try {
     // Check for API key selection logic for paid models
     if ((window as any).aistudio && (window as any).aistudio.hasSelectedApiKey) {
-       const hasKey = await (window as any).aistudio.hasSelectedApiKey();
-       if (!hasKey && (window as any).aistudio.openSelectKey) {
-          await (window as any).aistudio.openSelectKey();
-       }
+      const hasKey = await (window as any).aistudio.hasSelectedApiKey();
+      if (!hasKey && (window as any).aistudio.openSelectKey) {
+        await (window as any).aistudio.openSelectKey();
+      }
     }
 
     // Create new instance to ensure we use the potentially newly selected key
-    const ai = new GoogleGenAI({ apiKey: API_KEY, httpOptions: {baseUrl: "https://aihubmix.com/gemini"} });
+    const ai = new GoogleGenAI({ apiKey: API_KEY, httpOptions: { baseUrl: "https://aihubmix.com/gemini" } });
     const cleanBase64 = base64Image.split(',')[1] || base64Image;
 
     const response = await ai.models.generateContent({
@@ -133,7 +133,7 @@ export const removeTextFromImage = async (base64Image: string): Promise<string |
         return `data:image/png;base64,${part.inlineData.data}`;
       }
     }
-    
+
     return null;
   } catch (error) {
     console.error("Error cleaning image:", error);
