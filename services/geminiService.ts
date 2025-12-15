@@ -41,6 +41,14 @@ const responseSchema: Schema = {
             type: Type.STRING,
             enum: ["normal", "bold"],
             description: "The weight of the font."
+          },
+          strokeColor: {
+            type: Type.STRING,
+            description: "The hex color of the text outline/stroke if present (e.g. #FFFFFF). If no stroke, return null or empty string."
+          },
+          strokeWidth: {
+            type: Type.NUMBER,
+            description: "The estimated width of the text stroke in pixels (e.g. 0, 1, 2, 3)."
           }
         },
         required: ["originalText", "box_2d", "textColor", "backgroundColor", "fontFamily", "fontWeight"]
@@ -66,7 +74,7 @@ export const analyzeImageText = async (base64Image: string): Promise<AnalysisRes
             }
           },
           {
-            text: "Analyze this image for text editing. 1. Detect all visible text. 2. Create TIGHT bounding boxes around each text line or block. 3. Accurately identify the background color behind the text so we can erase it. 4. Estimate font style."
+            text: "Analyze this image for text editing. 1. Detect all visible text. 2. Create TIGHT bounding boxes around each text line or block. 3. Accurately identify the background color behind the text so we can erase it. 4. Estimate font style, including stroke/outline if present."
           }
         ]
       },
@@ -77,7 +85,11 @@ export const analyzeImageText = async (base64Image: string): Promise<AnalysisRes
       }
     });
 
+    console.log("Gemini API Response Object:", JSON.stringify(response, null, 2));
+
     const jsonText = response.text;
+    console.log("Gemini Extracted Text:", jsonText);
+
     if (!jsonText) throw new Error("No response from Gemini");
 
     const data = JSON.parse(jsonText);
@@ -99,13 +111,6 @@ export const analyzeImageText = async (base64Image: string): Promise<AnalysisRes
 
 export const removeTextFromImage = async (base64Image: string): Promise<string | null> => {
   try {
-    // Check for API key selection logic for paid models
-    if ((window as any).aistudio && (window as any).aistudio.hasSelectedApiKey) {
-      const hasKey = await (window as any).aistudio.hasSelectedApiKey();
-      if (!hasKey && (window as any).aistudio.openSelectKey) {
-        await (window as any).aistudio.openSelectKey();
-      }
-    }
 
     // Create new instance to ensure we use the potentially newly selected key
     const ai = new GoogleGenAI({ apiKey: API_KEY, httpOptions: { baseUrl: "https://aihubmix.com/gemini" } });

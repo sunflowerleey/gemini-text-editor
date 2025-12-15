@@ -14,6 +14,8 @@ export interface DetectedTextBlock {
   backgroundColor: string; // hex
   fontFamily: 'serif' | 'sans-serif' | 'monospace' | 'cursive';
   fontWeight: 'normal' | 'bold';
+  strokeColor?: string; // hex
+  strokeWidth?: number; // pixels
 }
 
 export interface AnalysisResult {
