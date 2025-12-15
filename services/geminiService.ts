@@ -1,7 +1,11 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { AnalysisResult } from "../types";
 
-const API_KEY = 'sk-3gefL9f5Hmlirysm63AeA1D971B74e398e9cF11dBc417fDa';
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+
+if (!API_KEY) {
+  console.error("Missing VITE_GEMINI_API_KEY in environment variables");
+}
 
 const responseSchema: Schema = {
   type: Type.OBJECT,
