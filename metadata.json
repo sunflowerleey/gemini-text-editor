@@ -1,0 +1,5 @@
+{
+  "name": "Gemini Text Editor",
+  "description": "Upload an image, detect text using AI, edit it in real-time, and download the modified result.",
+  "requestFramePermissions": []
+}
